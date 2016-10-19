@@ -652,6 +652,12 @@ function eval_fmt(fmt, v, opts, flen) {
 				o = c;
 				while(fmt[i++] !== ']' && i < fmt.length) o += fmt[i];
 				if(o.substr(-1) !== ']') throw 'unterminated "[" block: |' + o + '|';
+				// Negative values with conditional formatting: eliminate double hyphen (bug fix)
+				if (fmt[i] === '\\' && fmt[i+1] === '-') {
+					o += fmt[i];
+					o += fmt[i++];
+					i++;
+				}
 				if(o.match(abstime)) {
 					if(dt==null) { dt=parse_date_code(v, opts); if(dt==null) return ""; }
 					out[out.length] = {t:'Z', v:o.toLowerCase()};
